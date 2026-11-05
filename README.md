@@ -1,4 +1,4 @@
-# claude-ai-code-test_2026-11-05_01
+# 2026-11-05_01_claude-ai-code-test
 
 claude.ai/code の動作テスト用リポジトリです。
 
