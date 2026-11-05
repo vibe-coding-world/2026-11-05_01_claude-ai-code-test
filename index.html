@@ -14,14 +14,23 @@
       --accent-dark: #b85f41;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
+    /* OSの設定がダークで、手動でライトを選んでいない場合 */
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --bg: #1c1b19;
         --card: #2a2825;
         --text: #f1ede6;
         --muted: #a39e94;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       }
+    }
+    /* 手動でダークを選んだ場合 */
+    :root[data-theme="dark"] {
+      --bg: #1c1b19;
+      --card: #2a2825;
+      --text: #f1ede6;
+      --muted: #a39e94;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
     * { box-sizing: border-box; }
     body {
@@ -78,9 +87,23 @@
     #reset { background: transparent; color: var(--accent); }
     #reset:hover { background: rgba(217, 119, 87, 0.12); }
     button:focus-visible { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--muted);
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.9rem;
+      box-shadow: var(--shadow);
+      transition: none; /* 切替時に背景だけ遅れて変わり、文字が読めなくなるのを防ぐ */
+    }
   </style>
 </head>
 <body>
+  <button id="theme-toggle" type="button" aria-label="ダークモードとライトモードを切り替える"></button>
   <main class="card">
     <span class="badge">TEST PAGE</span>
     <h1>こんにちは、Claude Code!</h1>
@@ -102,6 +125,32 @@
       count = 0;
       el.textContent = count;
     });
+
+    // ダークモード切替(選択はブラウザに保存。保存できない環境でも動く)
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function currentTheme() {
+      return root.dataset.theme || (systemDark.matches ? 'dark' : 'light');
+    }
+    function updateLabel() {
+      toggle.textContent = currentTheme() === 'dark' ? '☀️ ライト' : '🌙 ダーク';
+    }
+
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+    } catch (e) { /* 保存された設定は使わない */ }
+    updateLabel();
+
+    toggle.addEventListener('click', () => {
+      const next = currentTheme() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) { /* 保存は諦める */ }
+      updateLabel();
+    });
+    systemDark.addEventListener('change', updateLabel);
   </script>
 </body>
 </html>
