@@ -5,39 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Code テストページ</title>
   <style>
+    :root {
+      --bg: #f6f3ee;
+      --card: #ffffff;
+      --text: #2b2a28;
+      --muted: #7a766f;
+      --accent: #d97757;
+      --accent-dark: #b85f41;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1b19;
+        --card: #2a2825;
+        --text: #f1ede6;
+        --muted: #a39e94;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: 3rem auto;
-      padding: 0 1rem;
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .card {
+      width: 100%;
+      max-width: 440px;
+      padding: 2.5rem 2rem;
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow);
       text-align: center;
-      background: #faf7f2;
-      color: #333;
     }
-    button {
-      font-size: 1rem;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      background: #d97757;
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 999px;
+      background: var(--accent);
       color: #fff;
-      cursor: pointer;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
     }
-    button:hover { opacity: 0.85; }
-    #message { margin-top: 1.5rem; font-size: 1.2rem; }
+    h1 { margin: 0 0 0.5rem; font-size: 1.6rem; }
+    p.lead { margin: 0 0 2rem; color: var(--muted); line-height: 1.7; }
+    .count {
+      margin: 0 0 1.5rem;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .count small { display: block; font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+    .buttons { display: flex; gap: 0.75rem; justify-content: center; }
+    button {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    button:active { transform: scale(0.96); }
+    #plus { background: var(--accent); color: #fff; }
+    #plus:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+    #reset { background: transparent; color: var(--accent); }
+    #reset:hover { background: rgba(217, 119, 87, 0.12); }
+    button:focus-visible { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
   </style>
 </head>
 <body>
-  <h1>こんにちは、Claude Code!</h1>
-  <p>claude.ai/code から作成したテストページです。</p>
-  <button id="btn">クリックしてね</button>
-  <p id="message"></p>
+  <main class="card">
+    <span class="badge">TEST PAGE</span>
+    <h1>こんにちは、Claude Code!</h1>
+    <p class="lead">claude.ai/code から作成した<br>テストページです。</p>
+    <div class="count"><span id="count">0</span><small>クリック数</small></div>
+    <div class="buttons">
+      <button id="plus">クリックしてね</button>
+      <button id="reset">リセット</button>
+    </div>
+  </main>
 
   <script>
     let count = 0;
-    document.getElementById('btn').addEventListener('click', () => {
-      count++;
-      document.getElementById('message').textContent = count + ' 回クリックされました';
+    const el = document.getElementById('count');
+    document.getElementById('plus').addEventListener('click', () => {
+      el.textContent = ++count;
+    });
+    document.getElementById('reset').addEventListener('click', () => {
+      count = 0;
+      el.textContent = count;
     });
   </script>
 </body>
